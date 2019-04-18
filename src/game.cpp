@@ -27,16 +27,16 @@ void Game::update(int delta) {
             this->quit = true;
             break;
         case 'q':
-            this->controlledTetromino->rotateLeft();
+            this->controlledTetromino->rotateLeft(this->grid);
             return;
         case 'e':
-            this->controlledTetromino->rotateRight();
+            this->controlledTetromino->rotateRight(this->grid);
             return;
         case 'a':
-            this->controlledTetromino->moveLeft();
+            this->controlledTetromino->moveLeft(this->grid);
             return;
         case 'd':
-            this->controlledTetromino->moveRight();
+            this->controlledTetromino->moveRight(this->grid);
             return;
         case 's':
             this->updateInterval = this->updateInterval/4;
@@ -45,6 +45,8 @@ void Game::update(int delta) {
     }
 
     if(this->timeFromUpdate>this->updateInterval){
+        this->controlledTetromino->update();
+
         if(this->updateInterval != prevSpeed) this->updateInterval = prevSpeed;
         this->timeFromUpdate = 0;
         int tetrX = this->controlledTetromino->getX();
@@ -52,17 +54,12 @@ void Game::update(int delta) {
         if(tetrY + this->controlledTetromino->getSizeY() >= BOARD_SIZE_Y ||
             tetrX + this->controlledTetromino->getSizeX() >= BOARD_SIZE_X){
             this->lockTetromino();
-        }else{
-            for(int x = 0; x < this->controlledTetromino->getSizeX(); x++){
-                if(this->grid[tetrX+x][tetrY + this->controlledTetromino->getSizeY()] &&
-                    this->controlledTetromino->contains(tetrX+x, tetrY+this->controlledTetromino->getSizeY()-1)){
-                    this->lockTetromino();
-                    return;
-                }
-            }
+        }else if(this->controlledTetromino->isIntersecting(this->grid)){
+            this->controlledTetromino->moveUp();
+            this->lockTetromino();
         }
 
-        this->controlledTetromino->update();
+
     }
     if(this->updateInterval != prevSpeed) this->updateInterval = prevSpeed;
 }

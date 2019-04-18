@@ -7,6 +7,11 @@
 
 #include "vector"
 
+#define BOARD_SIZE_X 10
+#define BOARD_SIZE_Y 20
+#define BOARD_OFFSET_X 36
+#define BOARD_OFFSET_Y 1
+
 using namespace std;
 
 enum TETROMINO_TYPE{
@@ -17,11 +22,12 @@ class Tetromino {
 public:
     Tetromino();
     void render();
-    void rotateLeft();
-    void rotateRight();
-    void moveLeft();
-    void moveRight();
+    void rotateLeft(int gameGrid[BOARD_SIZE_X][BOARD_SIZE_Y]);
+    void rotateRight(int gameGrid[BOARD_SIZE_X][BOARD_SIZE_Y]);
+    void moveLeft(int gameGrid[BOARD_SIZE_X][BOARD_SIZE_Y]);
+    void moveRight(int gameGrid[BOARD_SIZE_X][BOARD_SIZE_Y]);
     void update();
+    void moveUp();
 
 
     int getX(){ return this->loc_x; }
@@ -30,6 +36,7 @@ public:
     int getSizeY(){ return this->grid.size(); }
     int getColor(){ return this->color; }
     bool contains(int x, int y);
+    bool isIntersecting(int gameGrid[BOARD_SIZE_X][BOARD_SIZE_Y]);
 private:
     int loc_x, loc_y, color;
     vector<vector<bool>> grid;

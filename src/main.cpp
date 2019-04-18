@@ -4,8 +4,6 @@
 #include <chrono>
 #include "game.h"
 
-#define UPDATE_INTERVAL 150000
-
 using namespace std::chrono;
 
 void initScreen(){
@@ -43,8 +41,7 @@ bool gameLoop(){
         game.render();
         usleep(35000);
     }
-    if(game.hasQuit()) return false;
-    return true;
+    return !game.hasQuit();
 }
 
 

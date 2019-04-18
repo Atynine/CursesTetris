@@ -5,7 +5,6 @@
 #include <curses.h>
 #include <algorithm>
 #include "tetromino.h"
-#include "game.h"
 
 Tetromino::Tetromino() {
     int colors[] = {COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_MAGENTA, COLOR_CYAN};
@@ -54,27 +53,25 @@ void Tetromino::render() {
     attroff(COLOR_PAIR(this->color));
 }
 
-void Tetromino::rotateLeft() {
+void Tetromino::rotateLeft(int gameGrid[BOARD_SIZE_X][BOARD_SIZE_Y]) {
     int size = this->getSizeX();
     for(int y = 0; y < this->grid.size(); y++){
         std::reverse(this->grid[y].begin(), this->grid[y].end());
     }
     this->transpose();
-    while(size < this->getSizeX() && this->getX() + this->getSizeX() > BOARD_SIZE_X-1){
-        this->moveLeft();
-    }
+    this->loc_x+=size-this->getSizeX();
+    if(isIntersecting(gameGrid)) rotateRight(gameGrid);
 }
 
-void Tetromino::rotateRight() {
+void Tetromino::rotateRight(int gameGrid[BOARD_SIZE_X][BOARD_SIZE_Y]) {
     int size = this->getSizeX();
     this->transpose();
     for(int y = 0; y < this->grid.size(); y++){
         std::reverse(this->grid[y].begin(), this->grid[y].end());
     }
 
-    while(size < this->getSizeX() && this->getX() + this->getSizeX() > BOARD_SIZE_X-1){
-        this->moveLeft();
-    }
+    this->loc_x+=size-this->getSizeX();
+    if(isIntersecting(gameGrid)) rotateLeft(gameGrid);
 }
 
 void Tetromino::transpose() {
@@ -95,6 +92,11 @@ void Tetromino::update() {
     this->loc_y++;
 }
 
+void Tetromino::moveUp() {
+    this->loc_y--;
+}
+
+
 bool Tetromino::contains(int x, int y) {
     int arrX = x - this->getX();
     int arrY = y - this->getY();
@@ -104,13 +106,28 @@ bool Tetromino::contains(int x, int y) {
     return this->grid[arrY][arrX];
 }
 
-void Tetromino::moveLeft() {
+void Tetromino::moveLeft(int gameGrid[BOARD_SIZE_X][BOARD_SIZE_Y]) {
     if(this->loc_x-1 < 0) return;
     this->loc_x--;
+
+    if(this->isIntersecting(gameGrid)) this->loc_x++;
 }
 
-void Tetromino::moveRight() {
-    if(this->loc_x+this->getSizeX()+2 > BOARD_SIZE_X) return;
+void Tetromino::moveRight(int gameGrid[BOARD_SIZE_X][BOARD_SIZE_Y]) {
+    if(this->loc_x+this->getSizeX()+1 >= BOARD_SIZE_X) return;
     this->loc_x++;
+
+    if(this->isIntersecting(gameGrid)) this->loc_x--;
+}
+
+bool Tetromino::isIntersecting(int (*gameGrid)[20]) {
+    for(int y = 0; y < this->grid.size(); y++){
+        for(int x = 0; x < this->grid[y].size(); x++){
+            if(this->grid[y][x] && gameGrid[this->loc_x + x][this->loc_y + y]){
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
