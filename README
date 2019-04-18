@@ -1,0 +1,9 @@
+This is a re-make of the classic game 'Tetris' in c++ using curses.
+
+Controls:
+    A: Move tetromino left
+    D: Move tetromino right
+    S: Speed up descent of the tetromino
+    Q: Rotate the tetromino counter-clockwise
+    E: Rotate the tetromino clockwise
+    F: Quit
