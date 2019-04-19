@@ -1,9 +1,13 @@
 This is a re-make of the classic game 'Tetris' in c++ using curses.
 
+Points can be scored by creating complete lines. Uses the original NES Tetris' scoring system.
+The level will increase for every 5 lines cleared, which will increase how fast the tetrominoes fall.
+
 Controls:
     A: Move tetromino left
     D: Move tetromino right
     S: Speed up descent of the tetromino
     Q: Rotate the tetromino counter-clockwise
     E: Rotate the tetromino clockwise
+    W: Hold the current tetromino; if one is held, swap them
     F: Quit

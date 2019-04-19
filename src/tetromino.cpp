@@ -8,9 +8,8 @@
 
 Tetromino::Tetromino() {
     int colors[] = {COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_MAGENTA, COLOR_CYAN};
-    this->loc_x = BOARD_SIZE_X/2-2;
-    this->loc_y = 0;
     this->color = colors[rand()%5];
+    this->reset();
     int type = rand()%7;
     switch(type){
         case TETROMINO_TYPE::I:
@@ -43,11 +42,11 @@ Tetromino::Tetromino() {
     }
 }
 
-void Tetromino::render() {
+void Tetromino::render(int xOffset, int yOffset) {
     attron(COLOR_PAIR(this->color));
     for(int y = 0; y < this->grid.size(); y++){
         for(int x = 0; x < this->grid[y].size(); x++){
-            if(this->grid[y][x]) mvprintw(this->loc_y + y +BOARD_OFFSET_Y, this->loc_x + x + BOARD_OFFSET_X, " ");
+            if(this->grid[y][x]) mvprintw(this->loc_y+y+yOffset, this->loc_x+x+xOffset, " ");
         }
     }
     attroff(COLOR_PAIR(this->color));
@@ -96,7 +95,6 @@ void Tetromino::moveUp() {
     this->loc_y--;
 }
 
-
 bool Tetromino::contains(int x, int y) {
     int arrX = x - this->getX();
     int arrY = y - this->getY();
@@ -121,6 +119,7 @@ void Tetromino::moveRight(int gameGrid[BOARD_SIZE_X][BOARD_SIZE_Y]) {
 }
 
 bool Tetromino::isIntersecting(int (*gameGrid)[20]) {
+    if(this->loc_y + this->getSizeY() > BOARD_SIZE_Y) return true;
     for(int y = 0; y < this->grid.size(); y++){
         for(int x = 0; x < this->grid[y].size(); x++){
             if(this->grid[y][x] && gameGrid[this->loc_x + x][this->loc_y + y]){
@@ -129,5 +128,15 @@ bool Tetromino::isIntersecting(int (*gameGrid)[20]) {
         }
     }
     return false;
+}
+
+void Tetromino::reset() {
+    this->loc_x = BOARD_SIZE_X/2-2;
+    this->loc_y = 0;
+}
+
+void Tetromino::move(int x, int y) {
+    this->loc_x = x;
+    this->loc_y = y;
 }
 
