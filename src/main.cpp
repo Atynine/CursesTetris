@@ -14,7 +14,6 @@ void initScreen(){
     curs_set(0);
     keypad(stdscr, TRUE);
     cbreak();
-    nodelay(stdscr, TRUE);
     start_color();
     init_pair(COLOR_BLACK, COLOR_BLACK, COLOR_BLACK);
     init_pair(COLOR_RED, COLOR_BLACK, COLOR_RED);
@@ -31,6 +30,7 @@ void initScreen(){
  * @return false if the player is finished; true otherwise
  */
 bool gameLoop(){
+    nodelay(stdscr, TRUE);
     Game game;
     high_resolution_clock::time_point lastUpdate = high_resolution_clock::now();
     while(!game.hasQuit() && !game.hasEnded()){
@@ -41,7 +41,24 @@ bool gameLoop(){
         game.render();
         usleep(35000);
     }
-    return !game.hasQuit();
+    if(game.hasQuit()) return false;
+    clear();
+    nodelay(stdscr, FALSE);
+
+    mvprintw(0, 0, "Game Over. Press 'Q' to quit or 'N' to start again.");
+    mvprintw(1, 0, "Time:\t%d\n", game.getSecondsPlayed());
+    mvprintw(2, 0, "Score:\t%d\n", game.getScore());
+    mvprintw(3, 0, "Level:\t%d\n", game.getLevel());
+
+    int key;
+    while(true){
+        key = getch();
+        if(key == 'q'){
+            return false;
+        }else if(key == 'n'){
+            return true;
+        }
+    }
 }
 
 

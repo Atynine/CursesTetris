@@ -16,6 +16,12 @@ Game::Game() {
     memset(this->grid, 0, sizeof(this->grid));
 }
 
+Game::~Game() {
+    delete this->controlledTetromino;
+    delete this->heldTetromino;
+    delete this->nextTetromino;
+}
+
 void Game::update(int delta) {
     //Update time variables
     this->timePlayed += delta;
@@ -56,9 +62,15 @@ void Game::update(int delta) {
         if(tetrY + this->controlledTetromino->getSizeY() >= BOARD_SIZE_Y ||
             tetrX + this->controlledTetromino->getSizeX() >= BOARD_SIZE_X){
             this->lockTetromino();
+            if(this->controlledTetromino->isIntersecting(this->grid)){
+                this->ended = true;
+            }
         }else if(this->controlledTetromino->isIntersecting(this->grid)){
             this->controlledTetromino->moveUp();
             this->lockTetromino();
+            if(this->controlledTetromino->isIntersecting(this->grid)){
+                this->ended = true;
+            }
         }
         return;
     }

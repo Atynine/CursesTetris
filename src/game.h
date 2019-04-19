@@ -16,6 +16,7 @@
 class Game {
 public:
     Game();
+    ~Game();
     void update(int delta);
     void render();
     int getSecondsPlayed();
